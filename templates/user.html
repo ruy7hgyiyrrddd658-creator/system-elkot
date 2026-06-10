@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>محرك البحث الذكي - نظام الكوت</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 30px; background: #f8f9fa; }
+        .header { display: flex; justify-content: space-between; align-items: center; background: white; padding: 15px 30px; border-radius: 6px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .search-container { margin: 20px 0; display: flex; gap: 10px; }
+        input[type="text"] { flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 16px; }
+        .btn { padding: 12px 25px; border: none; border-radius: 4px; cursor: pointer; color: white; font-size: 16px; text-decoration: none; text-align: center; }
+        .btn-search { background: #007bff; }
+        .btn-export { background: #28a745; }
+        .btn-logout { background: #dc3545; }
+        table { width: 100%; border-collapse: collapse; background: white; margin-top: 20px; border-radius: 6px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        th, td { padding: 12px 15px; border-bottom: 1px solid #ddd; text-align: right; }
+        th { background: #f1f1f1; }
+        tr:hover { background: #f9f9f9; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2>شاشة البحث الذكي والفرز</h2>
+        <a href="/logout" class="btn btn-logout">تسجيل الخروج</a>
+    </div>
+
+    <form action="/user" method="GET" class="search-container">
+        <input type="text" name="search" value="{{ search_query }}" placeholder="اكتب الاسم (حتى لو مش متأكد من الحروف) أو الرقم المدني وسيقوم السستم بالمطابقة الفورية...">
+        <button type="submit" class="btn btn-search">ابحث ذكياً</button>
+        {% if search_query %}
+            <a href="/export?search={{ search_query }}" class="btn btn-export">تصدير هذه التصفية لإكسيل</a>
+        {% else %}
+            <a href="/export" class="btn btn-export">تصدير كل الداتا لإكسيل</a>
+        {% endif %}
+    </form>
+
+    <table>
+        <thead>
+            <tr>
+                <th>الاسم</th>
+                <th>الرقم المدني</th>
+                <th>رقم الهاتف</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in results %}
+            <tr>
+                <td>{{ row.name }}</td>
+                <td>{{ row.civil_id }}</td>
+                <td>{{ row.phone }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="3" style="text-align: center; color: #777;">لا توجد نتائج مطابقة، جرب كتابة اسم آخر.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
